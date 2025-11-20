@@ -238,11 +238,11 @@ filter(penguins, !is.na(bill_length_mm))
 
 ### Exercises
 
-1.  How many penguins male penguins have bill length \> 50?
+1.  How many male penguins have bill length \> 50?
 2.  How many penguins from the Adelie species were on the Biscoe island?
 
 ```{webr-r}
-# 1.  How many penguins male penguins have bill length > 50?
+# 1.  How many male penguins have bill length > 50?
 
 
 # 2.  How many penguins from the Adelie species were on the Biscoe island?
@@ -253,7 +253,7 @@ filter(penguins, !is.na(bill_length_mm))
 
 ```{r}
 #| code-fold: true
-# 1.  How many penguins male penguins have bill length > 50?
+# 1.  How many male penguins have bill length > 50?
 filter(penguins, sex == "male" & bill_length_mm > 50)
 
 # 2.  How many penguins from the Adelie species were on the Biscoe island?
@@ -641,10 +641,14 @@ download.file(url, "metadata.csv")
 ```{r}
 #| code-fold: true
 
+# run this in webR html
 url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
 download.file(url, "metadata.csv")
-
 metadata <- read_csv(metadata.csv, col_names = TRUE)
+
+# run this in Rstudio
+url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
+metadata <- read_csv(url, col_names = TRUE)
 
 metadata
 glimpse(metadata)
