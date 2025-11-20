@@ -1,0 +1,691 @@
+---
+title: "Intro to the Tidyverse"
+author: "Brandon Le"
+date: "11/20/2025"
+format: html
+execute: 
+  eval: false
+webr: 
+  packages: ['tidyverse', 'palmerpenguins']
+filters:
+  - webr
+title-block-banner: "#41ae76"
+code-overflow: wrap
+toc: true
+embed-resources: true
+---
+
+# What is the Tidyverse?
+
+The Tidyverse (https://www.tidyverse.org), is a collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+
+Packages included in the Tidyverse are:
+
++-----------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+| [![](https://tidyverse.org/css/images/hex/ggplot2.png)](https://ggplot2.tidyverse.org/) | [![](https://tidyverse.org/css/images/hex/dplyr.png)](https://dplyr.tidyverse.org/)         | [![](https://tidyverse.org/css/images/hex/readr.png)](https://readr.tidyverse.org/)     |
+|                                                                                         |                                                                                             |                                                                                         |
+| a system for declaratively creating graphics, based on The Grammar of Graphics          | grammar of data manipulation                                                                | fast and friendly way to read rectangular data (like csv, tsv, and fwf)                 |
++-----------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+| [![](https://tidyverse.org/css/images/hex/tibble.png)](https://tibble.tidyverse.org/)   | [![](https://tidyverse.org/css/images/hex/tidyr.png)](https://tidyr.tidyverse.org/)         | [![](https://tidyverse.org/css/images/hex/stringr.png)](https://stringr.tidyverse.org/) |
+|                                                                                         |                                                                                             |                                                                                         |
+| data.frames that are lazy and surly                                                     | help you create tidy data                                                                   | cohesive set of functions designed to make working with strings as easy as possible     |
++-----------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+| [![](https://tidyverse.org/css/images/hex/forcats.png)](https://forcats.tidyverse.org/) | [![](https://tidyverse.org/css/images/hex/lubridate.png)](https://lubridate.tidyverse.org/) | [![](https://tidyverse.org/css/images/hex/purrr.png)](https://purrr.tidyverse.org/)     |
+|                                                                                         |                                                                                             |                                                                                         |
+| suite of tools that solve common problems with factors                                  | helps with date-time data                                                                   | enhances R’s functional programming (FP) toolkit                                        |
++-----------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+
+: {tbl-colwidths="\[33,33,33\]"}
+
+# Installing the Tidyverse package
+
+You can install R packages from several sources:
+
+-   CRAN (Comprehensive R Archive Network)
+
+    ```{r install-cran}
+    install.packages("tidyverse", Ncpus = 6)
+    ```
+
+-   Github
+
+    ```{r install-gh}
+    require("devtools") # install devtools before loading library
+    library(devtools)
+    # https://github.com/tidyverse/tidyverse
+    devtools::install_github("tidyverse/tidyverse") 
+    ```
+
+-   Source file (tar.gz)
+
+    ```{r install-source}
+    # path_to_file is the full path to the tar.gz file
+    install.packages(path_to_file, repos = NULL, type = "source") 
+    ```
+
+-   RStudio (using the Tools --\> Install Packages)
+
+------------------------------------------------------------------------
+
+# Loading the packages
+
+We will load the `tidyverse` and `palmerpenguins` packages. The `palmerpenguins` package contains a dataset we will use to explore the many functions within the `tidyverse`.
+
+```{r load-libaries, eval=TRUE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(palmerpenguins) # load penguins data
+```
+
+------------------------------------------------------------------------
+
+# Palmerpenguins Dataset
+
+[![Artwork by \@allison_horst](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png){fig-alt="palmerpenguins" fig-align="center" width="700"}](https://allisonhorst.github.io/palmerpenguins/articles/art.html)
+
+Data were collected and made available by [Dr. Kristen Gorman](https://www.uaf.edu/cfos/people/faculty/detail/kristen-gorman.php) and the [Palmer Station, Antarctica LTER](https://pallter.marine.rutgers.edu/), a member of the [Long Term Ecological Research Network](https://lternet.edu/).
+
+There are 3 different species of penguins in this dataset, collected from 3 islands in the Palmer Archipelago, Antarctica. Data from 344 penguins were recorded.
+
+You can check out more data exploration and visualization with the `palmerpenguins` dataset here: [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/index.html).
+
+Lets explore the penguins dataset further.
+
+```{r penguins-dataset, eval=TRUE}
+penguins
+```
+
+The penguins dataset is in a dataframe called a tibble. This tibble contains 344 rows x 8 columns. There is a type description for each variable:
+
+-   `int` : integers
+-   `dbl` : doubles or real numbers
+-   `chr` : character or strings
+-   `fct` : factors
+
+Lets examine the column data.
+
+```{r structure, eval=TRUE}
+glimpse(penguins)
+```
+
+::::: columns
+::: {.column width="60%"}
+The column headers include:
+
+`species`: Chinstrap, Gentoo, Adelie\
+`island`: Biscoe, Dream, Torgersen\
+`year`: 2007, 2008, 2009\
+`sex`: female, male\
+`flipper_length_mm`: flipper length (mm)\
+`bill_length_mm`: bill length (mm)\
+`bill_depth_mm`: bill depth (mm)
+:::
+
+::: {.column width="40%"}
+[![Artwork by \@allison_horst](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png){fig-align="center"}](https://allisonhorst.github.io/palmerpenguins/articles/art.html)
+:::
+:::::
+
+------------------------------------------------------------------------
+
+# Importing Data with `readr`
+
+The `readr` package has multiple methods to read in a data file depending on the file type.
+
+-   `read_csv()`: comma-separated values (CSV)
+-   `read_tsv()`: tab-separated values (TSV)
+-   `read_csv2()`: semicolon-separated values with , as the decimal mark
+-   `read_delim()`: delimited files (CSV and TSV are important special cases)
+-   `read_fwf()`: fixed-width files
+-   `read_table()`: whitespace-separated files
+-   `read_log()`: web log files
+
+::: callout-tip
+## These import functions work with local files AND external web data files. For external web data files, provide a URL instead of the file path.
+:::
+
+## Examples of different file types
+
+-   **Reading in Delimited files (e.g. ":")**
+
+```{r read-delim}
+pg_delim <- read_delim(file = "data/penguins.txt", delim = ":", col_names = TRUE)
+```
+
+-   **Reading in CSV files**
+
+```{r read-csv}
+pg_csv <- read_csv(file = "data/penguins.csv", col_names = TRUE)
+```
+
+-   **Reading in TSV files**
+
+```{r read-tsv}
+pg_tsv <- read_csv(file = "data/penguins.csv", col_names = TRUE)
+```
+
+-   **Reading in Excel files**
+
+::: callout-note
+## These files require the `readxl` package!
+
+`read_excel` will determine whether the file is of `.xls` or `.xlsx` format. If you know the specific extension, use `read_xls` or `read_xlsx` instead.
+:::
+
+```{r read-xlsx }
+require(readxl)
+pg_xls <- read_xlsx(path = "data/penguins.xlsx", sheet = NULL, col_names = TRUE)
+```
+
+-   **Reading in Googlesheeets files**
+
+::: callout-note
+## These files require the `googlesheets4` package!
+
+You might see a message requesting authentication with the `googlesheets4` package. Select 1 and follow the authorization process. You only need to do this once.
+
+```         
+The googlesheets4 package is requesting access to your Google account. 
+Enter '1' to start a new auth process or select a pre-authorized account. 
+
+1: Send me to the browser for a new auth process. 
+2: email@ucr.edu 
+Selection:
+```
+:::
+
+```{r read-gsheet}
+require(googlesheets4)
+URL <- "https://docs.google.com/spreadsheets/d/1dFh-U1P0PpJurRXpmXbDzFalLpZMsMn7HvjPZ--vznw/edit?usp=sharing"
+pg_gsheet <- read_sheet(ss = URL, sheet = NULL, col_names = TRUE)
+```
+
+# Data Wrangling/Transformation with `dplyr`
+
+This section introduces the many functions of the `dplyr` package for data transformation. There are five key functions in `dplyr`:
+
+-   Picking observations by their values (i.e., row) (**filter()**)
+-   Reorder the rows (**arrange()**)
+-   Pick variables by their names (i.e., column) (**select()**)
+-   Create new variables with functions of existing variables (**mutate()**)
+-   Collapse many values down to a single summary (**summarize()**)
+-   Applying functions by group (**group_by()**)
+
+We will be using these functions to explore the `palmerpenguin` dataset (above).
+
+## Filter rows with `filter()`
+
+`filter()` allows you to subset observations based on their values.
+
+```{r filter}
+
+# female penguins only
+filter(penguins, sex == "female") 
+
+# data collected from 2007 or 2008
+filter(penguins, year == 2007 | year == 2008) 
+filter(penguins, year %in% c(2007,2008))
+
+# penguins with bill_length < 40 or bill_depth < 20
+filter(penguins, !(bill_length_mm > 40 | bill_depth_mm < 20))
+filter(penguins, bill_length_mm <= 40, bill_depth_mm < 20)
+
+# penguins with bill_length > 40 & body_mass > 3500
+filter(penguins, bill_length_mm > 45 & body_mass_g > 4000)
+
+# remove rows containing NA in bill length
+filter(penguins, !is.na(bill_length_mm))
+```
+
+### Exercises
+
+1.  How many penguins male penguins have bill length \> 50?
+2.  How many penguins from the Adelie species were on the Biscoe island?
+
+```{webr-r}
+# 1.  How many penguins male penguins have bill length > 50?
+
+
+# 2.  How many penguins from the Adelie species were on the Biscoe island?
+# 
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  How many penguins male penguins have bill length > 50?
+filter(penguins, sex == "male" & bill_length_mm > 50)
+
+# 2.  How many penguins from the Adelie species were on the Biscoe island?
+filter(penguins, species == "Adelie" & island == "Biscoe")
+
+```
+
+## Arrange rows with `arrange()`
+
+`arrange()` works similarly to `filter()` except that instead of selecting rows, it changes their order.
+
+```{r arrange}
+
+# sort penguins by sex, species, island
+arrange(penguins, sex, species, island)
+
+# sort penguins by bill length, in descending order
+arrange(penguins, desc(bill_length_mm))
+```
+
+### Exercises
+
+1.  Sort the data by species, then by bill length (in descending order)
+2.  Sort the data by island, then body mass (in descending order), then flipper length
+
+```{webr-r}
+# 1.  Sort the data by species, then by bill length (in descending order)
+
+
+# 2.  Sort the data by island, then body mass (in descending order), then flipper length
+
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  Sort the data by species, then by bill length (in descending order)
+arrange(penguins, species, desc(bill_length_mm))
+
+# 2.  Sort the data by island, then body mass (in descending order), then flipper length
+arrange(penguins, island, desc(body_mass_g), flipper_length_mm)
+```
+
+## Select columns with `select()`
+
+`select()` allows you to rapidly zoom in on a useful subset of variables based on the variable name
+
+```{r select}
+
+# select columns by name(e.g., species, bill length, and body mass)
+select(penguins, species, bill_length_mm, body_mass_g)
+
+# select all columns between species and bill depth (inclusive)
+select(penguins, species:bill_depth_mm)
+
+# select all columns except those from island to flipper length (inclusive)
+select(penguins, -(island:flipper_length_mm))
+
+# select the species column and all columms that begins with "bill"
+select(penguins, species, starts_with("bill")) 
+
+# select the species column and all columns that ends with "mm"
+select(penguins, species, ends_with("_mm"))
+
+# select the species column and all columns with "length"
+select(penguins, species, contains("length"))
+
+# rename a variable (e.g. species to genera)
+rename(penguins, genera = species)
+```
+
+### Exercises
+
+1.  Select the island, species, and all columns containing "th"
+2.  Select just the columns containing measurements
+3.  Remove the body_mass_g column from the table
+
+```{webr-r}
+# 1.  Select the island, species, and all columns containing "th"
+
+
+# 2.  Select just the columns containing measurements
+
+
+# 3.  Remove the body_mass_g column from the table
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  Select the island, species, and all columns containing "th"
+select(penguins, island, species, contains("th"))
+
+# 2.  Select just the columns containing measurements
+select(penguins, bill_length_mm:body_mass_g)
+select(penguins, -c(species, island, sex, year))
+
+# 3.  Remove the body_mass_g column from the table
+select(penguins, -(body_mass_g))
+```
+
+## Add new column variables with `mutate()`
+
+`mutate()` always add new columns at the end of your dataset so we’ll start by creating a narrower dataset so we can see the new variables.
+
+```{r mutate}
+
+# create a subset of penguins data
+penguins_sml <- select(penguins, 
+  -c(island, year)
+)
+
+# create variable bill_length_cm
+mutate(penguins_sml,
+  flipper_length_cm = flipper_length_mm / 10,
+  log10_body_mass_g = log10(body_mass_g) 
+)
+
+# create new variables using other variables
+mutate(penguins_sml,
+  ratio_bill_len_dep_mm = bill_length_mm / bill_depth_mm
+)
+
+# only display the new variables
+transmute(penguins_sml,
+  ratio_bill_len_dep_mm = bill_length_mm / bill_depth_mm
+)
+
+```
+
+### Exercises
+
+1.  Create a new variable call index, where index is proportional to flipper length (mm) times the ratio of bill length (mm) to bill depth (mm)
+2.  Create a new variable call bmi, where bmi is the index (in 1) divided by body mass (in kg)
+
+```{webr-r}
+# 1.  Create a new variable call index, where index is proportional to flipper length (mm) times the ratio of bill length (mm) to bill depth (mm)
+
+
+# 2.  Create a new variable call bmi, where bmi is the index (in 1) divided by body mass (in kg)
+
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  Create a new variable call index, where index is proportional to flipper length (mm) times the ratio of bill length (mm) to bill depth (mm)
+mutate(penguins, index = flipper_length_mm * (bill_length_mm / bill_depth_mm))
+
+# 2.  Create a new variable call bmi, where bmi is the index (in 1) divided by body mass (in kg)
+mutate(penguins, 
+       index = flipper_length_mm * (bill_length_mm / bill_depth_mm),
+       bmi = index / (body_mass_g/1000))
+
+```
+
+## Grouped summaries with `summarise()` and `group_by()`
+
+`summarise()` collapses a data frame into a single row. Some useful summary functions include:
+
+-   `mean(x)`
+-   `median(x)`
+-   `sd(x)` (standard deviation)
+-   `n()` count
+-   `sum(!is.na(x))` count of non-missing values
+-   `n_distinct(x)` count distinct values
+
+`group_by` allows you to subset the data into groups (based on column(s) data)
+
+```{r summarise}
+
+# mean bill length for all penguins surveyed
+summarise(penguins, mean_bill_len = mean(bill_length_mm, na.rm = TRUE))
+
+# mean bill length by species and island
+species_island <- group_by(penguins, species, island)
+summarise(species_island, mean_bill_len = mean(bill_length_mm, na.rm = TRUE))
+
+# summarize by muliple conditions on grouped data (species, island)
+# number penguins, mean bill length, median flipper length, minimum body mass, maximum body mass
+species_island <- group_by(penguins, species, island)
+summarise(species_island, no_penguins = n(),
+          mean_bill_len = mean(bill_length_mm, na.rm = TRUE),
+          median_flipper_len = median(flipper_length_mm, na.rm = TRUE),
+          min_body_mass_g = min(body_mass_g, na.rm = TRUE),
+          max_body_mass_g = max(body_mass_g, na.rm = TRUE)
+          )
+
+```
+
+### Exercises
+
+1.  Summarize by species, the number of penguins and the average body mass
+2.  Summarize by species and sex, the number of penguins and the average body mass
+
+```{webr-r}
+# 1.  Summarize by species, the number of penguins and the average body mass
+
+
+# 2.  Summarize by species and sex, the number of penguins and the average body mass
+
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  Summarize by species, the number of penguins and the average body mass
+species <- group_by(penguins, species)
+summarise(species, no_penguins = n(), mean_body_mass = mean(body_mass_g))
+
+# 2.  Summarize by species and sex, the number of penguins and the average body mass
+species_sex <- group_by(penguins, species, sex)
+summarise(species_sex, no_penguins = n(), mean_body_mass = mean(body_mass_g))
+
+```
+
+## Using the pipe operator `%>%` or `|>` to link multiple commands
+
+The pipe operator allows us to connect one command to the next without creating intermediate files.
+
+::: callout-tip
+## The `%>%` magrittr pipe operator comes from the `magritrr` package while the `|>` native pipe is built-in to base R after version 4.1. You need to load the `magrittr` or `dplyr` packages to use the `magrittr` pipe while the native pipe does not require any packages.
+:::
+
+```{r pipe}
+# mean bill length by species and island (without pipe)
+species_island <- group_by(penguins, species, island)
+summarise(species_island, mean_bill_len = mean(bill_length_mm, na.rm = TRUE))
+
+# mean bill length by species and island (with pipe)
+penguins |> 
+  group_by(species, island) |>
+  summarise(mean_bill_len = mean(bill_length_mm, na.rm = TRUE))
+
+# combine mulitple functions with pipe
+penguins |> 
+  group_by(species, island) |>
+  summarise(mean_bill_len = mean(bill_length_mm, na.rm = TRUE)) |>
+  filter(species == "Adelie")
+```
+
+### Exercises
+
+1.  Summarize by species, the number of penguins and the average body mass
+2.  Summarize by species and sex, the number of penguins and the average body mass
+
+```{webr-r}
+# 1.  Summarize by species, the number of penguins and the average body mass
+
+
+# 2.  Summarize by species and sex, the number of penguins and the average body mass
+
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+# 1.  Summarize by species, the number of penguins and the average body mass
+penguins |> 
+  group_by(species) |>
+  summarise(no_penguins = n(), 
+            mean_body_mass = mean(body_mass_g))
+
+# 2.  Summarize by species and sex, the number of penguins and the average body mass
+penguins |> 
+  group_by(species, sex) |>
+  summarise(no_penguins = n(), 
+            mean_body_mass = mean(body_mass_g))
+
+```
+
+## Useful Commands
+
+These are a few handy commands that you will likely encounter when wrangling your data.
+
+```{r}
+# removing all rows containing NA in any column
+penguins |> na.omit()
+
+# removing rows containing NA from specific columns (e.g., bill_length, bill_depth)
+filter_at(penguins, vars(bill_length_mm:sex), all_vars(!is.na(.)))
+
+# renaming columns using select()
+select(penguins, penguin_type = species, collection_year = year)
+
+# write over previous column data
+mutate(penguins, sex = case_when(
+  sex == "female" ~ "F",
+  sex == "male" ~ "M",
+  TRUE ~ NA
+))
+
+# convert data type (year from int to char)
+mutate(penguins, year = as.character(year))
+
+```
+
+## Exporting files using `readr`
+
+Similar to the functions used to import data into R, there are corresponding functions to export (i.e. write) data to files depending on the output data type
+
+-   `write_delim()` : delimited files (CSV and TSV are important special cases)
+-   `write_csv()` : comma-separated values
+-   `write_tsv()` : tab-separated values (TSV)
+-   `write_excel_csv()` : Excel format CSV
+-   `write_sheet()` : Googlesheet
+
+### Examples of different file types
+
+-   Writing to delimited file (e.g. ":")
+
+```{r write-delim}
+write_delim(object_name, file = "data/table.txt", delim = ":", col_names = TRUE)
+```
+
+-   Writing to CSV
+
+```{r write-csv}
+write_csv(object_name, file = "data/table.csv", col_names = TRUE)
+```
+
+-   Writing to TSV
+
+```{r write-tsv}
+write_tsv(object_name, file = "data/table.tsv", col_names = TRUE)
+```
+
+-   Writing to Excel
+
+```{r write-excel}
+write_excel_csv(object_name, file = "data/table.xls", col_names = TRUE)
+```
+
+-   Write to Googlesheets
+
+```{r write-gsheet}
+write_delim(object_name, ss = "googlesheet_name", sheet = NULL)
+```
+
+::: callout-tip
+## You can write to a compressed file by adding the compression extension (e.g. gz, zip, bz2) to the filename
+
+`write_csv(object_name, file = "data/table.csv.gz", col_names = TRUE)`
+:::
+
+# Exercise: Wrangling a metadata file
+
+In this section, we will wrangle a metadata file by doing the following:
+
+-   Read in the file
+-   Examine the data structure
+-   Subset the data with the "Sample_ID", "Treatment Group", "Sequencing Depth (M)", "Technician Name", and "Sequencer_Platform"
+-   Rename the column headings (replacing those with space or - to underscore)
+-   For the Treatment Group, replace "High_Dose" to "high", "Low_Dose" to "low", "Control" to "control" and change the column name to "dosage"
+-   For the Technician Name, convert "alice" to "Alice" and "BOB" to "Bob"
+-   Create a total_cost column where cost is the sequencing depth \* \$100/M reads
+
+**From the data, address the following questions:**
+
+-   Summarize the total number of samples processed by each technician per sequencer platform
+
+-   How many samples are suitable for further downstream analysis (requires a minimum of 35M reads per sample)
+
+```{webr-r}
+data_url <- ""
+
+
+
+```
+
+### Solutions
+
+```{r}
+#| code-fold: true
+
+data_url <- ""
+
+metadata <- read_csv(data_url, col_names = TRUE)
+
+metadata
+glimpse(metadata)
+
+metadata_subset <- metadata |>
+  select(Sample_ID, `Treatment Group`, `Sequencing Depth (M)`, `Technician Name`, Sequencer_Platform) |>
+  rename(dosage = `Treatment Group`,
+         seq_depth_M = `Sequencing Depth (M)`,
+         tech_name = `Technician Name`) |>
+  mutate(dosage = case_when(
+    dosage == "High_Dose" ~ "high",
+    dosage == "Low_Dose" ~ "low",
+    dosage == "Control" ~ "control",
+    TRUE ~ NA
+  )) |>
+  mutate(tech_name = case_when(
+    tech_name == "alice" ~ "Alice",
+    tech_name == "BOB" ~ "Bob",
+    TRUE ~ tech_name
+  )) |>
+  mutate(total_cost = seq_depth_M * 100)
+  
+# Addressing questions
+# Summarize the total number of samples processed by each technician per sequencer platform
+metadata_subset |>
+  group_by(tech_name, Sequencer_Platform) |>
+  summarise(no_samples = n())
+
+# How many samples are suitable for further downstream analysis (requires a minimum of 35M reads per sample)
+metadata_subset |>
+  filter(seq_depth_M > 35)
+```
+
+# Additional Resources
+
+[R for Non-Programmers](https://r4np.com/07_data_wrangling.html)
+
+[Data Science Workshops (Harvard Business School and Institute for Quantitative Social Science)](https://iqss.github.io/dss-workshops/RDataWrangling.html)
+
+[Tidyverse Skills for Data Science](https://jhudatascience.org/tidyversecourse/)
+
+# Session Info
+
+```{r session-info, eval=TRUE}
+sessionInfo()
+
+```
