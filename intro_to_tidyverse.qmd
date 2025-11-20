@@ -628,8 +628,10 @@ In this section, we will wrangle a metadata file by doing the following:
 -   How many samples are suitable for further downstream analysis (requires a minimum of 35M reads per sample)
 
 ```{webr-r}
-data_url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
+url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
+download.file(url, "metadata.csv")
 
+# can now load metadata.csv as if it's local
 
 
 ```
@@ -639,9 +641,10 @@ data_url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-
 ```{r}
 #| code-fold: true
 
-data_url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
+url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
+download.file(url, "metadata.csv")
 
-metadata <- read_csv(data_url, col_names = TRUE)
+metadata <- read_csv(metadata.csv, col_names = TRUE)
 
 metadata
 glimpse(metadata)
