@@ -2,7 +2,7 @@
 
 <figure>
 
-<img src="img/Workshop-Intro-Data-Wrangling-Tidyverse-2025.png" alt="Flyer" width="500" />
+<img src="images/Workshop-Intro-Data-Wrangling-Tidyverse-2025.png" alt="Flyer" width="500" />
 
 </figure>
 

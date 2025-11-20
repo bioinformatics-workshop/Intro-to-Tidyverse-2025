@@ -242,11 +242,14 @@ filter(penguins, !is.na(bill_length_mm))
 2.  How many penguins from the Adelie species were on the Biscoe island?
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4
+
 # 1.  How many male penguins have bill length > 50?
 
 
 # 2.  How many penguins from the Adelie species were on the Biscoe island?
-# 
+ 
+
 ```
 
 ### Solutions
@@ -280,6 +283,8 @@ arrange(penguins, desc(bill_length_mm))
 2.  Sort the data by island, then body mass (in descending order), then flipper length
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4
+
 # 1.  Sort the data by species, then by bill length (in descending order)
 
 
@@ -334,6 +339,8 @@ rename(penguins, genera = species)
 3.  Remove the body_mass_g column from the table
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4,7
+
 # 1.  Select the island, species, and all columns containing "th"
 
 
@@ -341,6 +348,7 @@ rename(penguins, genera = species)
 
 
 # 3.  Remove the body_mass_g column from the table
+
 
 ```
 
@@ -394,6 +402,8 @@ transmute(penguins_sml,
 2.  Create a new variable call bmi, where bmi is the index (in 1) divided by body mass (in kg)
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4
+
 # 1.  Create a new variable call index, where index is proportional to flipper length (mm) times the ratio of bill length (mm) to bill depth (mm)
 
 
@@ -456,6 +466,8 @@ summarise(species_island, no_penguins = n(),
 2.  Summarize by species and sex, the number of penguins and the average body mass
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4
+
 # 1.  Summarize by species, the number of penguins and the average body mass
 
 
@@ -509,6 +521,8 @@ penguins |>
 2.  Summarize by species and sex, the number of penguins and the average body mass
 
 ```{webr-r}
+#| editor-code-line-numbers: 1,4
+
 # 1.  Summarize by species, the number of penguins and the average body mass
 
 
@@ -561,7 +575,7 @@ mutate(penguins, year = as.character(year))
 
 ```
 
-## Exporting files using `readr`
+# Exporting files using `readr`
 
 Similar to the functions used to import data into R, there are corresponding functions to export (i.e. write) data to files depending on the output data type
 
@@ -573,31 +587,31 @@ Similar to the functions used to import data into R, there are corresponding fun
 
 ### Examples of different file types
 
--   Writing to delimited file (e.g. ":")
+-   **Writing to delimited file (e.g. ":")**
 
 ```{r write-delim}
 write_delim(object_name, file = "data/table.txt", delim = ":", col_names = TRUE)
 ```
 
--   Writing to CSV
+-   **Writing to CSV**
 
 ```{r write-csv}
 write_csv(object_name, file = "data/table.csv", col_names = TRUE)
 ```
 
--   Writing to TSV
+-   **Writing to TSV**
 
 ```{r write-tsv}
 write_tsv(object_name, file = "data/table.tsv", col_names = TRUE)
 ```
 
--   Writing to Excel
+-   **Writing to Excel**
 
 ```{r write-excel}
 write_excel_csv(object_name, file = "data/table.xls", col_names = TRUE)
 ```
 
--   Write to Googlesheets
+-   **Write to Googlesheets**
 
 ```{r write-gsheet}
 write_delim(object_name, ss = "googlesheet_name", sheet = NULL)
@@ -631,7 +645,7 @@ In this section, we will wrangle a metadata file by doing the following:
 url <- "https://raw.githubusercontent.com/bioinformatics-workshop/Intro-to-Tidyverse-2025/refs/heads/main/data/metadata.csv"
 download.file(url, "metadata.csv")
 
-# can now load metadata.csv as if it's local
+# can now load metadata.csv as if it's a local file
 
 
 ```
@@ -654,10 +668,11 @@ metadata
 glimpse(metadata)
 
 metadata_subset <- metadata |>
-  select(Sample_ID, `Treatment Group`, `Sequencing Depth (M)`, `Technician Name`, Sequencer_Platform) |>
-  rename(dosage = `Treatment Group`,
+  select(Sample_ID, 
+         dosage = `Treatment Group`,
          seq_depth_M = `Sequencing Depth (M)`,
-         tech_name = `Technician Name`) |>
+         tech_name = `Technician Name`,
+         Sequencer_Platform) |>
   mutate(dosage = case_when(
     dosage == "High_Dose" ~ "high",
     dosage == "Low_Dose" ~ "low",

@@ -1,0 +1,119 @@
+---
+title: "The Tidyverse and Data Wrangling"
+author: "Brandon Le"
+date-modified: 11-20-2025
+institute: ""
+code-line-numbers: true
+code-overflow: scroll
+affiliation: "IIGB, University of California, Riverside"
+format: 
+  revealjs:
+    theme: simple
+    scrollable: true
+    smaller: false
+    output-file: workshop-presentation-revealjs.html
+editor: visual
+slide-number: true
+title-slide-attributes:
+    data-background-image: ../images/UCR-BC-logo-800x200.png
+    data-background-size: 70%
+    data-background-opacity: "1"
+    data-background-position: "top"
+link-external-newwindow: true
+embed-resources: true
+standalone: true
+footer: "https://github.com/bioinformatics-workshop/Intro-to-Tidyverse-2025"
+---
+
+# About the Core
+
+## IIGB Bioinformatics Core {.smaller}
+
+::: panel-tabset
+### Website {.smaller}
+
+<https://facility.bioinformatics.ucr.edu>
+
+![](images/UCR-BC-logo-800x200.png){.absolute}
+
+### Services {.smaller}
+
+-   Data analysis
+    -   RNA-seq, ChIP-seq
+    -   scRNA-seq
+    -   DNA-seq
+    -   Other
+-   Project consultations
+-   Method development
+
+### Workshops
+
+-   [Repositories](https://github.com/orgs/bioinformatics-workshop/repositories)
+-   Past workshops
+    -   [Intro to Unix](https://github.com/bioinformatics-workshop/Intro-to-Unix)
+    -   [Intro to R/R-Studio](https://github.com/bioinformatics-workshop/Intro-to-R-RStudio)
+    -   [Intro to Shell Scripting](https://github.com/bioinformatics-workshop/Intro-to-Shell-Scripting)
+    -   [RNA-seq-workshop](https://github.com/bioinformatics-workshop/RNA-Seq-Workshop)
+
+### Office Hour
+
+-   Daily (2-3PM)
+-   In-person or via Zoom (by appt)
+-   [Calendly](https://calendly.com/ucr_iigb_bioinfocore)
+:::
+
+# OnDemand
+
+## Logging in to the server via OnDemand {.smaller}
+
+<br>
+
+You should receive an email with login information if you've never had an account on the HPCC. For those with an account already, you can use the same credentials to log into the server.
+
+Open up your browser and type the following URL: <https://ondemand.hpcc.ucr.edu>
+
+![](images/OnDemand_login.png)
+
+::: callout-note
+Use the provided login credentials to log in to OnDemand. Then you'll be ask for authentication password and two-factor validation with DUO.
+:::
+
+<br> After logging in, you'll see the HPCC OnDemand Welcome Page
+
+![](images/OnDemand_splash.png)
+
+## Requesting an Interactive Session {.smaller}
+
+To request an interactive app, click on `Interactive Apps` and select the App of interest (e.g. RStudio Server).
+
+![](images/OnDemand_interactive_app_menu.png)
+
+You will see an app launch form. Fill in the following information:
+
+![](images/OnDemand_interactive_app_form.png)
+
+Then click `Launch` and wait for resources to be gathered for your app.
+
+![](images/OnDemand_interactive_app_queue.png)
+
+Once the app is ready, click `Connect to RStudio` to launch the RStudio Server.
+
+![](images/OnDemand_interactive_app_launch.png)
+
+## RStudio
+
+![](images/RStudio.png){.absolute}
+
+## Lets Get Started {.smaller}
+
+<br> Go to the GitHub repository <https://github.com/bioinformatics-workshop>
+
+Select the workshop
+
+Click on the `<> Code` button and copy the HTTPS URL
+
+In the terminal tab in Rstudio (in the console section), type in `git clone` and paste the URL from github (see below as an example)
+
+`git clone https://github.com/bioinformatics-workshop/Intro-to-Tidyverse-2025.git`
+
+Now, you should have a clone of the workshop documents with scripts and html files to follow.
